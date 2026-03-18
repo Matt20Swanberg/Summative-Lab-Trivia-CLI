@@ -1,17 +1,17 @@
 
 const questions = [
     {
-        Question: "Question1 is as follows?",
+        question: "Question1 is as follows?",
         options: ['A', 'B', 'C', 'D'],
         answer: 'A',
     },
     {
-        Question: "Question2 is as follows?",
+        question: "Question2 is as follows?",
         options: ['A', 'B', 'C', 'D'],
         answer: 'B',
     },
     {
-        Question: "Question3 is as follows?",
+        question: "Question3 is as follows?",
         options: ['A', 'B', 'C', 'D'],
         answer: 'C',
     }
