@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "bin": {
     "summative-lab-trivia-cli": "bin/index.js"
   },
@@ -11,5 +12,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.1",
+    "chalk": "^4.1.2",
+    "commander": "^13.1.0"
+  }
 }
