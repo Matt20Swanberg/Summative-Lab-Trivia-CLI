@@ -1,4 +1,6 @@
-
+// Array of quiz question objects.
+// Each object includes the question text, answer options, 
+// and correct answer.
 const questions = [
     {
         question: "Question1 is as follows?",
@@ -17,4 +19,5 @@ const questions = [
     }
 ]
 
+// Export the question list so it can be used by the game logic.
 export default questions;

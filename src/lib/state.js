@@ -1,3 +1,5 @@
+// Shared game state object.
+// Stores score, question progress, and whether the game has ended.
 const gameState = {
     stats: {
         correct: 0,
@@ -8,4 +10,5 @@ const gameState = {
     over: false,
 };
 
+// Export the shared state so other files can read and update it.
 export default gameState;

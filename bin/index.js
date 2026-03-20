@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 
+// Import the shared game state object.
 import gameState from "../src/lib/state.js";
+// Import the function that starts the CLI.
 import { showMainMenu } from "../src/lib/gameLogic.js";
-import questions from "../src/lib/questions.js";
+
 
 async function run() {
   await showMainMenu(gameState);
 }
 
+// Run the CLI app.
 run();
