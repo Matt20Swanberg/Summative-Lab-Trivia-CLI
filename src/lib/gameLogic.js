@@ -62,21 +62,37 @@ export function showQuestion(question, questionNumber, totalQuestions) {
 };
 
 export async function selectAnswerWithTimer(question, timeLimitInSeconds) {
-    const answerPromise = select({
-        message: `Choose your answer (${timeLimitInSeconds} seconds):`,
-        choices: question.options.map((option) => ({
-            name: option,
-            value: option,
-        })),
-    });
+    const controller = new AbortController();
 
-    const timeoutPromise = new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(null);
-        }, timeLimitInSeconds * 1000);
-    });
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, timeLimitInSeconds * 1000);
 
-    return await Promise.race([answerPromise, timeoutPromise]);
+    try {
+        const answer = await select(
+            {
+                message: `Choose your answer (${timeLimitInSeconds} seconds):`,
+                choices: question.options.map((option) => ({
+                    name: option,
+                    value: option,
+                })),
+            },
+            {
+                signal: controller.signal,
+            }
+        );
+
+        clearTimeout(timeoutId);
+        return answer;
+    } catch (error) {
+        clearTimeout(timeoutId);
+
+        if (error.name === "AbortPromptError") {
+            return null;
+        }
+
+        throw error;
+    }
 }
 
 export function showTimeoutFeedback(correctAnswer) {
