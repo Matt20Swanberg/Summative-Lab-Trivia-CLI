@@ -36,7 +36,9 @@ npm install
 
 ## How to Run
 
-node index.js  
+node index.js in terminal
+if CLI is enabled
+-> trivia in terminal
 
 ---
 
