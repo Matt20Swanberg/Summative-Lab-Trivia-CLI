@@ -38,6 +38,8 @@ npm install
 - in terminal:
 1. node index.js
 
+- or:
+ 
 2. trivia (if CLI requirements are met)
 
 ---
