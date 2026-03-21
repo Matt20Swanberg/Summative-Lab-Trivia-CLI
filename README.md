@@ -35,11 +35,11 @@ npm install
 ---
 
 ## How to Run
-- in terminal:
+In terminal:
 1. node index.js
 
 - or:
- 
+
 2. trivia (if CLI requirements are met)
 
 ---
