@@ -35,10 +35,10 @@ npm install
 ---
 
 ## How to Run
+- in terminal:
+1. node index.js
 
-node index.js in terminal
-if CLI is enabled
--> trivia in terminal
+2. trivia (if CLI requirements are met)
 
 ---
 
