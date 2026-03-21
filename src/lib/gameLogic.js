@@ -45,6 +45,7 @@ export async function showMainMenu(gameState) {
 // Resets the game, shows each question in order, scores answers,
 // and shows the final results at the end.
 export async function startGame(gameState, questions) {
+    resetGameState(gameState);
     const selectedQuestions = getRandomQuestions(questions, 10);
 
     for (let i = 0; i < selectedQuestions.length; i++) {
@@ -185,7 +186,7 @@ export function showGameOverFeedback(gameState, questions) {
         gameState.stats.timedOut > 0 ? ` (${gameState.stats.timedOut} timed out)` : "";
 
 
-    console.log(chalk.bgYellowBright(`\n**********Here are your results out of ${questions}:**********`));
+    console.log(chalk.bgYellowBright(`\n**********Here are your results out of ${questions} total questions:**********`));
 
     console.log(chalk.green(`Correct answers: ${gameState.stats.correct}`))
     console.log(chalk.red(`Incorrect answers: ${gameState.stats.incorrect + gameState.stats.timedOut}${timeoutText}`));
