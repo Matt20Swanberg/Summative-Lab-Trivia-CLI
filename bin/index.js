@@ -7,7 +7,9 @@ import { showMainMenu } from "../src/lib/gameLogic.js";
 
 
 async function run() {
-  await showMainMenu(gameState);
+  while (true) {
+    await showMainMenu(gameState);
+}
 }
 
 // Run the CLI app.
