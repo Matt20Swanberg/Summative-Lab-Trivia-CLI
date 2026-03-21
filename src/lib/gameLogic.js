@@ -1,22 +1,43 @@
 // Used to add color and styling to terminal output.
 import chalk from "chalk";
 // Used to prompt the player to choose answers in the CLI.
-import { select } from "@inquirer/prompts";
+import { select, input } from "@inquirer/prompts";
 // Import the quiz question data.
 import questions from "./questions.js";
+
+// Variable to control timer 
+const timeLimit = 25;
 
 // ****Starting point function to show main menu*****
 // then prompt player for selected action
 export async function showMainMenu(gameState) {
+
+    // Variable to store the Main menu message in a cleaner format rather
+    // than one very long sentence
+    const welcomeMessage = (
+        chalk.yellow("Welcome to my trivia lab.\n") +
+        "You will be asked 5 randomly pulled questions.\nYou will have " +
+        chalk.red(`${timeLimit} seconds `) +
+        "to answer EACH question.\n\n" +
+        chalk.bgGreenBright("Good luck!!\n")
+    );
+
     const action = await select({
-        message: "Main Menu",
-        choices: [{ name: "Start Game", value: "start" },],
+        message: welcomeMessage,
+        choices: [
+            { name: "Start Game", value: "start" },
+            { name: "Exit", value: "exit" },
+        ],
     });
 
     switch (action) {
         case "start":
             await startGame(gameState, questions);
             break;
+
+        case "exit":
+            console.log("Goodbye!");
+            process.exit(0);
     }
 }
 
@@ -24,19 +45,16 @@ export async function showMainMenu(gameState) {
 // Resets the game, shows each question in order, scores answers,
 // and shows the final results at the end.
 export async function startGame(gameState, questions) {
-    // Start each new game with a clean state.
-    resetGameState(gameState);
+    const selectedQuestions = getRandomQuestions(questions, 10);
 
-    // Loop through quiz questions one at a time.
-    for (let i = 0; i < questions.length; i++) {
-        gameState.currentQuestionIndex = i;
-        const currentQuestion = questions[i];
+    for (let i = 0; i < selectedQuestions.length; i++) {
+        const currentQuestion = selectedQuestions[i];
 
         // Show the current question and its position in the quiz.
-        showQuestion(currentQuestion, i + 1, questions.length);
+        showQuestion(currentQuestion, i + 1, selectedQuestions.length);
 
         // Give the player a limited amount of time to answer.
-        const selectedAnswer = await selectAnswerWithTimer(currentQuestion, 2);
+        const selectedAnswer = await selectAnswerWithTimer(currentQuestion, timeLimit);
 
         // Check the answer, update score, and show feedback.
         if (selectedAnswer === null) {
@@ -49,16 +67,18 @@ export async function startGame(gameState, questions) {
         giveAnswerFeedback(isCorrect, currentQuestion.answer);
     }
 
+    // Pull 10 random questions (15 total)
+    function getRandomQuestions(allQuestions, count) {
+        const shuffled = [...allQuestions].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, Math.min(count, allQuestions.length));
+    }
+
     // Mark the game as over and show the final results.
     endGame(gameState);
-    showGameOverFeedback(gameState, questions.length);
+    showGameOverFeedback(gameState, selectedQuestions.length);
 
     // Show the ending menu.
-    const action = await endScreen();
-
-    if (action === "end") {
-        console.log(chalk.blue("\nThanks for playing!"));
-    }
+    await endScreen();
 };
 
 // ****Helper functions****
@@ -75,7 +95,7 @@ export function resetGameState(gameState) {
 // Display the current question and its position in the quiz.
 export function showQuestion(question, questionNumber, totalQuestions) {
     console.log(chalk.yellow(`Question ${questionNumber} of ${totalQuestions}`));
-    console.log(chalk.white(question.question));
+    console.log(`Question ${questionNumber}: ${question.question}`);
 };
 
 // Prompt the player to select an answer before the timer expires.
@@ -159,19 +179,19 @@ export function endGame(gameState) {
 };
 
 // Display the player's final quiz results.
-export function showGameOverFeedback(gameState, totalQuestions) {
+export function showGameOverFeedback(gameState, questions) {
     // Only show timeout details if at least one question timed out.
     const timeoutText =
         gameState.stats.timedOut > 0 ? ` (${gameState.stats.timedOut} timed out)` : "";
 
 
-    console.log(chalk.bgYellowBright(`\n**********Here are your results out of ${totalQuestions}:**********`));
+    console.log(chalk.bgYellowBright(`\n**********Here are your results out of ${questions}:**********`));
 
     console.log(chalk.green(`Correct answers: ${gameState.stats.correct}`))
     console.log(chalk.red(`Incorrect answers: ${gameState.stats.incorrect + gameState.stats.timedOut}${timeoutText}`));
 
     // Calculate the final score percentage.
-    const percentage = ((gameState.stats.correct / totalQuestions) * 100).toFixed(1);
+    const percentage = ((gameState.stats.correct / questions) * 100).toFixed(1);
 
     // Show a message based on performance.
     if (percentage >= 50) {
@@ -186,13 +206,10 @@ export function showGameOverFeedback(gameState, totalQuestions) {
     }
 }
 
-// Show the final end screen menu and return the selected action.
+// Show the final end screen menu and a prompt to hit ENTER to
+// return back to main menu (due to main menu setup) .
 export async function endScreen() {
-    const action = await select({
-        message: "Game Over!",
-        choices: [
-            { name: "End Game", value: "end" },
-        ],
+    await input({
+        message: `${chalk.blue("\nPress Enter to return to the main menu...")}`,
     });
-    return action;
 }
